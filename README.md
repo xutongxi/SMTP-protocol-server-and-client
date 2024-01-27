@@ -25,3 +25,15 @@ SMTP协议与服务器配置基于Python与Linux，更详细的版本说明会�
 ## 为实现功能，代码结构如下所写
 1. 实现sesmtp库以便主函数运行（包括了所有服务器端SMTP协议的功能）
 2. 设置主函数，实现SMTP服务器（更详细过程在代码过程中补充）
+
+
+def sendMail(sender_addr, receiver_addr, msg)
+    sender_addr是一个字符串，是发送者的邮箱地址
+    receiver_addr是一个字符串列表，表示收件人的邮箱地址。如果只有一个字符串就代表只有一个收件人
+    msg是消息字符串
+
+
+def helo(name=''):
+    使用 HELO 向 SMTP 服务器表明自己的身份。
+    在python的stmp库中，这个方法并不需要明确调用，一般是被sendMail()进行隐式调用
+
