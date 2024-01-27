@@ -37,3 +37,15 @@ def helo(name=''):
     使用 HELO 向 SMTP 服务器表明自己的身份。
     在python的stmp库中，这个方法并不需要明确调用，一般是被sendMail()进行隐式调用
 
+def quit():
+    退出链接
+
+def login(user,password):
+    登录到一个需要验证的SMTP服务器，参数是认证的用户名和密码
+
+def set_Debuglevel(level):
+    设置调试输出级别。 如果 level 的值为 1 或 True ，就会产生连接的调试信息，以及所有发送和接收服务器的信息。 如果 level 的值为 2 ，则这些信息会被加上时间戳
+
+def docmd(cmd)
+    向服务器发送一条命令cmd
+
