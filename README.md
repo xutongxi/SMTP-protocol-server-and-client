@@ -25,3 +25,29 @@ SMTP协议与服务器配置基于Python与Linux，更详细的版本说明会�
 ## 为实现功能，代码结构如下所写
 1. 实现sesmtp库以便主函数运行（包括了所有服务器端SMTP协议的功能）
 2. 设置主函数，实现SMTP服务器（更详细过程在代码过程中补充）
+
+
+def sendMail(sender_addr, receiver_addr, msg)
+    sender_addr是一个字符串，是发送者的邮箱地址
+    receiver_addr是一个字符串列表，表示收件人的邮箱地址。如果只有一个字符串就代表只有一个收件人
+    msg是消息字符串
+
+
+def helo(name=''):
+    使用 HELO 向 SMTP 服务器表明自己的身份。
+    在python的stmp库中，这个方法并不需要明确调用，一般是被sendMail()进行隐式调用
+
+def quit():
+    退出链接
+
+def login(user,password):
+    登录到一个需要验证的SMTP服务器，参数是认证的用户名和密码
+
+def set_Debuglevel(level):
+    设置调试输出级别。 如果 level 的值为 1 或 True ，就会产生连接的调试信息，以及所有发送和接收服务器的信息。 如果 level 的值为 2 ，则这些信息会被加上时间戳
+
+def docmd(cmd)
+    向服务器发送一条命令cmd
+
+## docmd函数可以发送的cmd命令有：HLEO, EHLO, MAIL, RCPT, DATA, RSET, VRFY, EXPN, NOOP, QUIT, 
+
