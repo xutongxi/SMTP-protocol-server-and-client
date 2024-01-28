@@ -49,3 +49,5 @@ def set_Debuglevel(level):
 def docmd(cmd)
     向服务器发送一条命令cmd
 
+## docmd函数可以发送的cmd命令有：HLEO, EHLO, MAIL, RCPT, DATA, RSET, VRFY, EXPN, NOOP, QUIT, 
+
