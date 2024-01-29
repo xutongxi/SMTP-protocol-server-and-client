@@ -1,35 +1,67 @@
-class SMTPserver(asyncore.dispatcher):
-    def process_command(self, command, *args):
-        # 处理客户端的命令并返回相应的回复
-        if command == "HELO":
-            return "250 Hello, this is my SMTP server"
-        elif command == "MAIL":
-            return "250 OK"
-        elif command == "RCPT":
-            return "250 OK"
-        elif command == "DATA":
-            return "354 End data with <CR><LF>.<CR><LF>"
-        elif command == "QUIT":
-            return "221 Goodbye"
+import  socket
+import asyncore
+import time
+
+class Devnull:
+    def write(self, msg): pass
+    def flush(self): pass
+
+
+#当程序中的某些地方试图使用 DEBUGSTREAM 写入数据时，实际上什么也不会发生，就像向 /dev/null 写入数据一样，数据会被忽略。这在调试时可以用来禁用调试输出，而不必修改大量代码。
+DEBUGSTREAM = Devnull()
+
+SMTP_PORT = 25
+DATA_SIZE_DEFAULT = 1024
+
+
+class   SMTPServer(asyncore.dispatcher):
+    def _init_(self, localAddr, remoteAddr, dataSizeLimit = DATA_SIZE_DEFAULT, map = none, enableSMTPUTF8 = False, decodeData = False):
+        self.localAddr = localAddr
+        self.remoteAddr = remoteAddr
+        self.dataSizeLimit = dataSizeLimit
+        self.enableSMTPUTF8 = enableSMTPUTF8
+        self.decodeData = decodeData
+        
+        try:
+            serverSocket = socket.getaddrinfo(*localAddr, type=socket.SOCK_STREAM)
+            self.create_socket(serverSocket[0][0], serverSocket[0][1])
+            self.set_reuse_addr()
+            self.bind(localAddr)
+            self.listen(5)
+            
+        except:
+            self.close()
+            raise
         else:
-            return "500 Command not recognized"
+            print('%s started at %s \n\t Local addr: %s \n\t Remote addr: %s' %(self.__class__.__name__, time.ctime(time.time()),localAddr, remoteAddr), file=DEBUGSTREAM)
 
-    def process_message(self, peer, mailfrom, rcpttos, data, **kwargs):
-        print(f"Received message from: {mailfrom}")
-        print(f"Recipients: {rcpttos}")
+        connectionSocket, address = self.accept()
+        command =  connectionSocket.recv(1024).decode
+        match command:
+            case "HELO":
+                reply = "250 Hello, this is my SMTP server"
 
-        # 处理邮件数据
-        print(f"Message data:\n{data.decode('utf-8')}")
+            case "MAIL":
+                reply = "250 OK"
+
+            case "RCPT":
+                reply = "250 OK"
+
+            case "DATA":
+                reply = "354 End data with <CR><LF>.<CR><LF>"
+
+            case "QUIT":
+                reply = "221 Goodbye"
+
+            case _:
+                reply = "500 Command not recognized"
+        connectionSocket.send(reply.encode())
+        
 
 
-if __name__ == '__main__':
-    # 在本地监听 1025 端口
-    server = MySMTPServer(('localhost', 1025), None)
-    print("SMTP Server listening on port 1025...")
 
-    try:
-        #启动异步事件循环。在这个循环中，程序会一直等待和处理事件，包括接收新的SMTP连接、接收数据等
-        asyncore.loop()
-    except KeyboardInterrupt:          #捕获键盘中断异常，即用户按下Ctrl+C中断程序的情况。
-        print("SMTP Server shutting down...")
-        server.close()
+
+
+
+
+
