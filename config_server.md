@@ -13,3 +13,7 @@ administrator
 smtpserver
 
 scp 文件传输命令
+scp local_file username@remote_host:/remote/path/
+
+scp server_test.py administrator@smtpserver:~/test_server
+12345a!678
