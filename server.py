@@ -1,4 +1,6 @@
+from readline import replace_history_item
 import  socket
+from urllib import request
 import asyncore
 import time
 
@@ -15,6 +17,45 @@ DATA_SIZE_DEFAULT = 1024
 
 
 class   SMTPServer(asyncore.dispatcher):
+    
+
+    def handleClient(connectionSocket):
+        welcome_msg = "220 Welcome to My SMTP Server\r\n"
+        connectionSocket.send(welcome_msg.encode())
+
+        expectedCommand = ["HELO", "MAIL", "RCPT", "DATA", "QUIT"]
+        currentCommandIndex = 0
+
+        while True:
+            request = connectionSocket.recv(1024).decode()
+            if not request:
+                break
+            if not request.startswith(expectedCommand[currentCommandIndex]):
+                errorMsg = "503 Bad sequence of commands\r\n"
+                connectionSocket.send(errorMsg.encode())
+                break
+            if request.startswith("HELO"):
+                response = "250 OK\r\n"
+            elif request.startswith("MAIL"):
+                response = "250 OK\r\n"
+            elif request.startswith("RCPT"):
+                while request.startswith("RCPT"):
+                    response = "250 OK\r\n"
+                    connectionSocket.send(response.encode())
+                    request = connectionSocket.recv(1024).decode()
+                continue
+            elif request.startswith("DATA"):
+                response = "354 End data with <CR><LF>.<CR><LF>\r\n"
+            elif request.startswith("QUIT"):
+                response = "221 Goodbye\r\n"
+                break
+            else:
+                response = "500 Command not recognized\r\n"
+
+            connectionSocket.send(response.encode())
+            currentCommandIndex +=1
+        connectionSocket.close()
+
     def _init_(self, localAddr, remoteAddr, dataSizeLimit = DATA_SIZE_DEFAULT, map = none, enableSMTPUTF8 = False, decodeData = False):
         self.localAddr = localAddr
         self.remoteAddr = remoteAddr
@@ -35,28 +76,10 @@ class   SMTPServer(asyncore.dispatcher):
         else:
             print('%s started at %s \n\t Local addr: %s \n\t Remote addr: %s' %(self.__class__.__name__, time.ctime(time.time()),localAddr, remoteAddr), file=DEBUGSTREAM)
 
-        connectionSocket, address = self.accept()
-        command =  connectionSocket.recv(1024).decode
-        match command:
-            case "HELO":
-                reply = "250 Hello, this is my SMTP server"
-
-            case "MAIL":
-                reply = "250 OK"
-
-            case "RCPT":
-                reply = "250 OK"
-
-            case "DATA":
-                reply = "354 End data with <CR><LF>.<CR><LF>"
-
-            case "QUIT":
-                reply = "221 Goodbye"
-
-            case _:
-                reply = "500 Command not recognized"
-        connectionSocket.send(reply.encode())
-        
+        while True:
+            connectionSocket, address = self.accept()
+            print(f"Connection from {address}")
+            self.handleClient(connectionSocket)
 
 
 
