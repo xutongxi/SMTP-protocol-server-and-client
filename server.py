@@ -1,6 +1,5 @@
 from readline import replace_history_item
 import  socket
-#from urllib import request
 import asyncore
 import time
 
@@ -56,7 +55,7 @@ class   SMTPServer(asyncore.dispatcher):
             currentCommandIndex +=1
         connectionSocket.close()
 
-    def _init_(self, localAddr, remoteAddr, dataSizeLimit = DATA_SIZE_DEFAULT, map = none, enableSMTPUTF8 = False, decodeData = False):
+    def __init__(self, localAddr, remoteAddr, dataSizeLimit = DATA_SIZE_DEFAULT, map = none, enableSMTPUTF8 = False, decodeData = False):
         self.localAddr = localAddr
         self.remoteAddr = remoteAddr
         self.dataSizeLimit = dataSizeLimit
@@ -80,6 +79,18 @@ class   SMTPServer(asyncore.dispatcher):
             connectionSocket, address = self.accept()
             print(f"Connection from {address}")
             self.handleClient(connectionSocket)
+
+    def handle_accept(self):
+        connectionSocket, address = self.accept()
+        print(f"Connection from {address}")
+        self.handleClient(connectionSocket)
+
+# 创建服务器实例
+smtp_server = SMTPServer(('localhost', SMTP_PORT), ('remote_host', SMTP_PORT))
+asyncore.loop()
+
+
+    
 
 
 
