@@ -55,8 +55,9 @@ class   SMTPServer(asyncore.dispatcher):
             currentCommandIndex +=1
         connectionSocket.close()
 
-    def __init__(self, localAddr, remoteAddr, dataSizeLimit = DATA_SIZE_DEFAULT, map = none, enableSMTPUTF8 = False, decodeData = False):
+    def __init__(self, localAddr, remoteAddr, dataSizeLimit = DATA_SIZE_DEFAULT, map = None, enableSMTPUTF8 = False, decodeData = False):
         self.localAddr = localAddr
+        self._map = map if map is not None else {}
         self.remoteAddr = remoteAddr
         self.dataSizeLimit = dataSizeLimit
         self.enableSMTPUTF8 = enableSMTPUTF8
@@ -82,8 +83,9 @@ class   SMTPServer(asyncore.dispatcher):
 
     def handle_accept(self):
         connectionSocket, address = self.accept()
-        print(f"Connection from {address}")
-        self.handleClient(connectionSocket)
+        if connectionSocket is not None:  # 添加这一行，确保接受到有效的连接
+            print(f"Connection from {address}")
+            self.handleClient(connectionSocket)
 
 # 创建服务器实例
 smtp_server = SMTPServer(('localhost', SMTP_PORT), ('remote_host', SMTP_PORT))
