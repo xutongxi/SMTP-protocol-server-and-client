@@ -1,12 +1,12 @@
 from socket import *
 
-hostname = "192.168.191.205"
+hostname = "163.123.183.116"
 port = 12345
 
 clinet = socket(AF_INET, SOCK_STREAM)
 clinet.connect((hostname,port))
 
-message = input("Please enter command:")
+message = input("HELO")
 clinet.send(message.encode())
 
 reply = clinet.recv(1024).decode()
