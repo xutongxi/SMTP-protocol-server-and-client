@@ -1,6 +1,6 @@
 from socket import *
 server = socket(AF_INET, SOCK_STREAM)
-server.bind(("163.123.183.116", 12345))
+server.bind(("192.168.156.1", 12345))
 
 server.listen(5)
 print("Server is ready to accept commands....")

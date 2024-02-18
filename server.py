@@ -11,7 +11,7 @@ class Devnull:
 #当程序中的某些地方试图使用 DEBUGSTREAM 写入数据时，实际上什么也不会发生，就像向 /dev/null 写入数据一样，数据会被忽略。这在调试时可以用来禁用调试输出，而不必修改大量代码。
 DEBUGSTREAM = Devnull()
 
-SMTP_PORT = 25
+SMTP_PORT = 10086
 DATA_SIZE_DEFAULT = 1024
 
 
