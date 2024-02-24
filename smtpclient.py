@@ -1,7 +1,4 @@
 import socket
-import email.utils
-import email.message
-import email.generator
 import re
 
 SMTP_PORT = 25
