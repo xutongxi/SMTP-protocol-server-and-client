@@ -106,13 +106,7 @@ class client_SMTP:
         if msg == None:
             msg = self.local_host_hostname
         (reply_code, result_msgs) = self.send_cmd('ehlo', msg)
-        if int(reply_code) == 250:
-            self.esmtp = True
-            feature = result_msgs.decode("ascii").split('\n')#依据换行符进行分割
-            self.esmtp_support = feature_extra(feature)
-            
-        else:
-            return (reply_code, result_msgs)
+        return (reply_code, result_msgs)
         
         
     def send_noop(self):
